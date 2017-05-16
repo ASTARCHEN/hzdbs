@@ -34,7 +34,11 @@ public class Task extends Thread {
 		socket = s;
 		user = u;
 	}
-
+	/**
+	 * 开始测试
+	 * @param jsoninfo
+	 * @return
+	 */
 	public boolean testPaper(GetJSONInfo jsoninfo) {
 
 		List<Task> list = TaskManager.getStudentList();
@@ -45,19 +49,24 @@ public class Task extends Thread {
 			flag &= stuTask.postPapar(value);
 		}
 		JSONObject res = new JSONObject();
-		part.put("tag", flag);
+		part.put("tag", Common.START_TEST);
+		part.put("value", flag);
 		ServerJsonCreater jsonCreater = new ServerJsonCreater(user.getUsername(), user.getPart(), res);
 		JSONObject response = jsonCreater.createJson();
 		SendHelper.send(socket, response);
 		return flag;
 	}
-
+	/**
+	 * 发送试卷给学生
+	 * @param value
+	 * @return
+	 */
 	public boolean postPapar(int value) {
 		Paper paper = new Paper();
 		paper.createPaper(value);
 		JSONObject part = new JSONObject();
-		part.put("stem", paper.getQuestionList());
-
+		part.put("stem", paper.getStemList());
+		part.put("tag", "paper");
 		ServerJsonCreater creater = new ServerJsonCreater(user.getUsername(), user.getPart(), part);
 		JSONObject response = creater.createJson();
 		SendHelper.send(socket, response);
@@ -75,7 +84,8 @@ public class Task extends Thread {
 		}
 		JSONObject response = new JSONObject();
 		TaskManager.add(user.getPart(),this);
-		response.put("tag", tag.getPart());
+		response.put("tag", "login");
+		response.put("state", tag.getPart());
 		ServerJsonCreater creater = new ServerJsonCreater(user.getUsername(), user.getPart(), part);
 		OutputStream outStream = socket.getOutputStream();
 		PrintWriter writer = new PrintWriter(outStream);
@@ -102,7 +112,7 @@ public class Task extends Thread {
 						testPaper(jsoninfo);
 						break;
 					}
-					case Common.Handle_PAPER:
+					case Common.HANDLE_PAPER:
 						handlePaper(jsoninfo);
 						break;
 					case Common.LOGIN: {
@@ -142,11 +152,20 @@ public class Task extends Thread {
 		
 	}
 
-	private void handlePaper(GetJSONInfo jsoninfo) {
+	/**
+	 * 交卷
+	 * @param jsoninfo
+	 */
+	public boolean handlePaper(GetJSONInfo jsoninfo) {
 		// TODO Auto-generated method stub
-		
+		return false;
 	}
 
+	/**
+	 * 上传试卷
+	 * @param jsoninfo
+	 * @return
+	 */
 	private boolean uploadPaper(GetJSONInfo jsoninfo) {	
 		
 		for(Task t : TaskManager.getTeacherList()){

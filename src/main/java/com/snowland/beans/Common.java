@@ -7,6 +7,6 @@ public class Common {
 	public static final String STUDENT = "student";
 	public static final String START_TEST = "start";
 	public static final String LOGIN = "login";
-	public static final String UPLOAD_PAPER = "upload_paper";
-	public static final String Handle_PAPER = "handle_paper";
+	public static final String UPLOAD_PAPER = "upload_paper";//上传试卷（学生调用）功能字符串
+	public static final String HANDLE_PAPER = "handle_paper";//交卷（教师调用）功能字符串
 }

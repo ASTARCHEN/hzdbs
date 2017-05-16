@@ -61,4 +61,12 @@ public class Paper {
 		}
 		return b;
 	}
+	
+	public List<String> getStemList(){
+		List<String> stemList = new ArrayList<String>();
+		for(Question q : questionList) {
+			stemList.add(q.getStem());
+		}
+		return stemList;
+	}
 }
