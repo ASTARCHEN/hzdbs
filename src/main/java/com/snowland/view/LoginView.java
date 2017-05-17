@@ -4,6 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -21,19 +23,22 @@ import org.json.JSONObject;
 
 import com.snowland.beans.Common;
 import com.snowland.beans.User;
+import com.snowland.client.Client;
 import com.snowland.client.ClientJsonCreater;  
   
 public class LoginView extends JFrame implements ActionListener  
 {  
+	private Client client;
     JButton login = new JButton("登录");  
     JButton exit = new JButton("退出");  
-    JLabel  name = new JLabel("用户名：");  
+    JLabel  name = new JLabel("用户名：");
     JLabel password = new JLabel("密码：");   
     JTextField JName = new JTextField(10); //明文账号输入  
     JPasswordField JPassword = new JPasswordField(10); // 非明文密码输入；  
       
-    public LoginView()   
+    public LoginView() throws UnknownHostException, IOException   
     {  
+    	client = new Client();
         JPanel jp = new JPanel();  
         jp.setLayout(new GridLayout(3,2));  //3行2列的面板jp（网格布局）  
           
@@ -56,7 +61,14 @@ public class LoginView extends JFrame implements ActionListener
         this.setLocation(500,300);  //设置初始位置  
         this.pack();        //表示随着面板自动调整大小  
         this.setVisible(true);  
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);  
+//        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        addWindowListener(new WindowAdapter() {
+        public void windowClosing(WindowEvent e) {
+        	client.exit();
+	        super.windowClosing(e);
+	        }
+        });
     }  
     public void actionPerformed(ActionEvent e)  // 对时间进行处理  
     {  
@@ -76,41 +88,55 @@ public class LoginView extends JFrame implements ActionListener
         	ClientJsonCreater jsonCreater = new ClientJsonCreater(username, null, "login", part);
         	try {
 				Socket socket = new Socket(Common.HOST, Common.PORT);
-			} catch (UnknownHostException e1) {
+				client.setSocket(socket);
+				User user = new User(username,password);
+				this.client.setUser(user);
+				client.login(password);
+				JSONObject responseJSONObject = client.getResponse();
+				JSONObject resultJSONObject = new JSONObject((String)responseJSONObject.get("response"));
+				resultJSONObject.get("tag");
+				
+        	} catch (UnknownHostException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			} catch (IOException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
+			} catch (Exception e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
 			}
         	//socket.
-        	int res = 1;
-//        	User res = login.getLogin(username, password);
-            switch(res)  
-            {
-            case 1 :
-                JOptionPane.showMessageDialog(null, "登录成功，欢迎到来！");  
-                //显示信息提示框  
-                System.exit(0);
-                break;
-            case 0 :
-            	JOptionPane.showMessageDialog(null, "用户或密码错误！请从新登录！");  
-                //显示信息提示框  
-                JName.setText("");   
-                JPassword.setText(""); 
-                break;
-            case -1: default:
-            	JOptionPane.showMessageDialog(null, "加载失败");  
-            	JName.setText("");   
-                JPassword.setText(""); 
-            	break;
-            }  
+//        	int res = 1;
+//        	
+//            switch(res)  
+//            {
+//            case 1 :
+//                JOptionPane.showMessageDialog(null, "登录成功，欢迎到来！");  
+//                //显示信息提示框  
+//                System.exit(0);
+//                break;
+//            case 0 :
+//            	JOptionPane.showMessageDialog(null, "用户或密码错误！请从新登录！");  
+//                //显示信息提示框  
+//                JName.setText("");   
+//                JPassword.setText(""); 
+//                break;
+//            case -1: default:
+//            	JOptionPane.showMessageDialog(null, "加载失败");  
+//            	JName.setText("");   
+//                JPassword.setText(""); 
+//            	break;
+//            }  
             
         }  
     }  
-    public static void main(String[] args)  
-    {  
+    public static void main(String[] args) throws UnknownHostException, IOException {  
         JFrame.setDefaultLookAndFeelDecorated(true);  
         new LoginView();  
     }  
+    
+    public Client getClient(){
+    	return client;
+    }
 }  

@@ -24,8 +24,8 @@ public class LoginAction {
 			PreparedStatement ps = conn.prepareStatement(sql);
 			
 			ResultSet set = ps.executeQuery();
-			set.next();
-			if(set.wasNull()){
+//			set.next();
+			if(set.next()){
 				return null;
 			} else {
 //				String username = set.getString("username");

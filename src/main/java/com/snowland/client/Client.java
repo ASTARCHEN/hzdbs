@@ -46,10 +46,18 @@ public class Client {
 		SendHelper.send(socket, json);
 	}
 	
-	public String getResponse() throws Exception {
+	public void exit() {
+		// TODO Auto-generated method stub
+		JSONObject jsonObject = new JSONObject();	
+		ClientJsonCreater creater = new ClientJsonCreater(user.getUsername(),user.getPart(),Common.EXIT, jsonObject);
+		JSONObject json = creater.createJson();
+		SendHelper.send(socket, json);
+	}
+	
+	public JSONObject getResponse() throws Exception {
 		InputStream inStream = socket.getInputStream();
 		JSONObject jsonObject = GetJsonHelper.readStream(inStream);
-		return jsonObject.toString();
+		return jsonObject;
 	}
 	public Socket getSocket() {
 		return socket;

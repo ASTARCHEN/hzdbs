@@ -119,6 +119,10 @@ public class Task extends Thread {
 						login(jsoninfo);
 						break;
 					}
+					case Common.EXIT:{
+						exit(jsoninfo);
+						break;
+					}
 					default:
 						break;
 					}
@@ -146,7 +150,30 @@ public class Task extends Thread {
 				}
 			}
 		} catch (Exception e) {
+			if(null !=socket)
+				try {
+					socket.close();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			System.out.println(user.getPart());
+			e.printStackTrace();
+		}
+		
+	}
+
+	@SuppressWarnings("deprecation")
+	private void exit(GetJSONInfo jsoninfo) {
+		try {
+			// NOTO 下面两句顺序不能颠倒！
+			TaskManager.remove(user.getPart(),this);
+			if(null != socket){
+				this.socket.close();
+			}
+			super.destroy();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		

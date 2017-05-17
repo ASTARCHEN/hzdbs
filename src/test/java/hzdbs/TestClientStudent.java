@@ -25,7 +25,7 @@ public class TestClientStudent {
 			client.setUser(stu);
 			client.login("123");
 			try {
-				String str = client.getResponse();
+				String str = client.getResponse().toString();
 				System.out.println(str);
 				while (true) {
 					InputStream in = client.getSocket().getInputStream();

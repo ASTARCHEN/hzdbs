@@ -45,7 +45,7 @@ public class TaskManager {
 		}
 	}
 	
-	public boolean remove(String part, Task t) {
+	public static boolean remove(String part, Task t) {
 		if(part.equals(Common.TEACHER)) {
 			synchronized (teacherList) {
 				return teacherList.remove(t);

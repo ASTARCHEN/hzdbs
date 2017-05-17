@@ -13,10 +13,10 @@ public class TestClientTeacher {
 			Teacher teacher = new Teacher("admin");
 			client.setUser(teacher);
 			client.login("admin");
-			String str = client.getResponse();
+			String str = client.getResponse().toString();
 			System.out.println(str);
 			client.requestPaper(1);
-			str = client.getResponse();
+			str = client.getResponse().toString();
 			System.out.println(str);
 			while(true);
 		} catch (IOException e) {
